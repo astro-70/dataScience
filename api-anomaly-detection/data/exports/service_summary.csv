@@ -1,0 +1,7 @@
+service,total_intervals,total_requests,avg_latency_ms,median_latency_ms,p95_latency_ms,max_latency_ms,avg_cpu_percent,max_cpu_percent,avg_memory_mb,total_errors_5xx,error_rate_pct,ground_truth_anomalies,actionable_alerts_count
+auth-service,8640,596758,46.22,43.68,69.71,480.41,12.72,36.42,181.27,10,0.116,47,0
+inventory-service,8640,595477,58.5,55.75,89.64,489.96,14.49,99.0,209.88,9,0.104,20,6
+notification-service,8640,596633,27.97,26.87,42.7,82.76,8.34,23.31,130.03,12,0.139,11,3
+order-service,8640,600424,116.48,111.06,177.13,1110.27,18.5,96.48,259.78,9,0.104,20,5
+payment-service,8640,595872,214.45,201.42,323.91,1842.85,21.98,99.43,322.09,23,0.266,55,7
+user-service,8640,600264,32.0,30.48,49.12,198.41,9.43,93.67,149.99,6,0.069,7,0

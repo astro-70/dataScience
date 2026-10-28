@@ -1,0 +1,7 @@
+service,sample_size,mean_latency_ms,ci_95_lower,ci_95_upper,margin_of_error
+auth-service,8571,46.24,45.81,46.66,0.43
+inventory-service,8590,58.52,58.1,58.95,0.43
+notification-service,8587,27.98,27.81,28.15,0.17
+order-service,8581,116.47,115.56,117.37,0.9
+payment-service,8579,214.11,212.19,216.03,1.92
+user-service,8548,32.0,31.79,32.21,0.21

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Anomaly Detection & Intelligent Alerting System</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="top-navbar">
+    <div class="brand-wrapper">
+      <div class="brand-logo">AD</div>
+      <div>
+        <h1 class="brand-title">API Anomaly Detection & Alerting System</h1>
+        <div class="brand-subtitle">U23AD491 DATA SCIENCE PROJECT | 3RD-YEAR B.TECH CSE</div>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <div class="system-status-badge">
+        <span class="pulse-dot"></span>
+        <span id="system-status-text">SYSTEM ACTIVE & HEALTHY</span>
+      </div>
+      <a href="/download/analysis_workbook.xlsx" class="btn-secondary" id="download-excel-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Excel Workbook (.xlsx)
+      </a>
+      <a href="/download/metrics_clean.csv" class="btn-secondary" id="download-csv-btn">
+        Clean Dataset (.csv)
+      </a>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="tabs-container">
+    <button class="tab-btn active" data-tab="tab-overview" id="nav-btn-overview">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+      Overview & KPIs
+    </button>
+    <button class="tab-btn" data-tab="tab-fleet" id="nav-btn-fleet">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+      Microservices Fleet
+    </button>
+    <button class="tab-btn" data-tab="tab-models" id="nav-btn-models">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+      ML Models & 2D PCA
+    </button>
+    <button class="tab-btn" data-tab="tab-alerts" id="nav-btn-alerts">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+      Alerting & Incidents
+    </button>
+    <button class="tab-btn" data-tab="tab-simulator" id="nav-btn-simulator">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+      Live Anomaly Simulator
+    </button>
+    <button class="tab-btn" data-tab="tab-viva" id="nav-btn-viva">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      Viva Voce & Guides
+    </button>
+  </nav>
+
+  <!-- Main Content Body -->
+  <main class="main-wrapper">
+
+    <!-- =============================================================
+         TAB 1: OVERVIEW & EXECUTIVE KPIS
+         ============================================================= -->
+    <section class="tab-content active" id="tab-overview">
+      <div class="kpi-grid">
+        <div class="card kpi-card">
+          <div class="kpi-label">Total Monitored Requests</div>
+          <div class="kpi-value" id="kpi-total-requests">--</div>
+          <div class="kpi-badge badge-info">30 Days Telemetry</div>
+        </div>
+        <div class="card kpi-card secondary">
+          <div class="kpi-label">System Average Latency</div>
+          <div class="kpi-value" id="kpi-avg-latency">--</div>
+          <div class="kpi-badge badge-healthy">Normal Baseline</div>
+        </div>
+        <div class="card kpi-card warning">
+          <div class="kpi-label">System Error Rate (5xx)</div>
+          <div class="kpi-value" id="kpi-error-rate">--</div>
+          <div class="kpi-badge badge-warning" id="kpi-total-errors">-- Errors</div>
+        </div>
+        <div class="card kpi-card success">
+          <div class="kpi-label">Alert Fatigue Reduction</div>
+          <div class="kpi-value" id="kpi-fatigue-cut">98.7%</div>
+          <div class="kpi-badge badge-healthy" id="kpi-naive-alerts">Saved 1,540 False Alarms</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom: 2rem;">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Live Telemetry & Throughput Time Series</h2>
+            <div class="card-subtitle">Dual-axis correlation: Response Duration (ms) vs Request Volume over time</div>
+          </div>
+          <div>
+            <select class="form-select" id="overview-service-select" style="width: 220px;">
+              <option value="payment-service" selected>payment-service (/pay)</option>
+              <option value="auth-service">auth-service (/login)</option>
+              <option value="order-service">order-service (/orders)</option>
+              <option value="user-service">user-service (/users)</option>
+              <option value="inventory-service">inventory-service (/inventory)</option>
+              <option value="notification-service">notification-service (/notify)</option>
+            </select>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="chart-timeseries"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Microservice Architecture Topology & Dependency Graph</h3>
+            <div class="card-subtitle">Topology-aware root cause tracing prevents cascading alarm storms</div>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-around; flex-wrap:wrap; gap:1rem; padding:1rem 0; text-align:center;">
+          <div style="background:rgba(99,102,241,0.1); border:1px solid rgba(99,102,241,0.3); padding:1rem 1.5rem; border-radius:12px;">
+            <div style="font-size:0.75rem; color:#818cf8; font-weight:700;">GATEWAY INGRESS</div>
+            <div style="font-weight:700; font-size:1.1rem; margin-top:0.25rem;">order-service</div>
+            <div style="font-size:0.75rem; color:#94a3b8; margin-top:0.25rem;">Depends on: payment, inventory</div>
+          </div>
+          <div style="align-self:center; color:#64748b;">➔</div>
+          <div style="background:rgba(244,63,94,0.1); border:1px solid rgba(244,63,94,0.3); padding:1rem 1.5rem; border-radius:12px;">
+            <div style="font-size:0.75rem; color:#f43f5e; font-weight:700;">CRITICAL NODE</div>
+            <div style="font-weight:700; font-size:1.1rem; margin-top:0.25rem;">payment-service</div>
+            <div style="font-size:0.75rem; color:#94a3b8; margin-top:0.25rem;">Depends on: inventory-service</div>
+          </div>
+          <div style="align-self:center; color:#64748b;">➔</div>
+          <div style="background:rgba(6,182,212,0.1); border:1px solid rgba(6,182,212,0.3); padding:1rem 1.5rem; border-radius:12px;">
+            <div style="font-size:0.75rem; color:#06b6d4; font-weight:700;">DATA STORE</div>
+            <div style="font-weight:700; font-size:1.1rem; margin-top:0.25rem;">inventory-service</div>
+            <div style="font-size:0.75rem; color:#94a3b8; margin-top:0.25rem;">Stock reservation node</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================================
+         TAB 2: MICROSERVICES FLEET
+         ============================================================= -->
+    <section class="tab-content" id="tab-fleet">
+      <div class="card" style="margin-bottom: 2rem;">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Microservice Latency vs P95 SLA Benchmark</h2>
+            <div class="card-subtitle">Normal baseline duration compared against 95th-percentile SLA thresholds</div>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="chart-service-comparison"></canvas>
+        </div>
+      </div>
+
+      <div class="services-grid" id="services-grid-container">
+        <!-- Rendered via JavaScript -->
+      </div>
+    </section>
+
+    <!-- =============================================================
+         TAB 3: ML MODELS & 2D PCA
+         ============================================================= -->
+    <section class="tab-content" id="tab-models">
+      <div class="charts-grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Model Performance Comparison (Unit IV)</h2>
+              <div class="card-subtitle">Out-of-sample evaluation across precision, recall, and F1 scores</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-model-benchmark"></canvas>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">PCA 2D Projection</h3>
+              <div class="card-subtitle">Normal vs Anomaly clustering</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-pca"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Comprehensive Machine Learning Evaluation Table</h3>
+            <div class="card-subtitle">Strict time-series split (75% Train, 25% Test; Zero data leakage)</div>
+          </div>
+        </div>
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Model Architecture</th>
+                <th>Precision</th>
+                <th>Recall</th>
+                <th>F1 Score</th>
+                <th>ROC-AUC</th>
+                <th>False Positives</th>
+                <th>Detection Delay</th>
+              </tr>
+            </thead>
+            <tbody id="table-models-body">
+              <!-- Rendered via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================================
+         TAB 4: ALERTING & INCIDENTS
+         ============================================================= -->
+    <section class="tab-content" id="tab-alerts">
+      <div class="charts-grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Actionable Incidents Register</h2>
+              <div class="card-subtitle">Deduplicated, Bayesian confidence-scored production alerts</div>
+            </div>
+            <div style="display:flex; gap:0.5rem;">
+              <button class="btn-secondary alert-filter-btn active" id="filter-alert-all" onclick="filterAlerts('ALL')">All</button>
+              <button class="btn-secondary alert-filter-btn" id="filter-alert-critical" onclick="filterAlerts('CRITICAL')">Critical</button>
+              <button class="btn-secondary alert-filter-btn" id="filter-alert-warning" onclick="filterAlerts('WARNING')">Warning</button>
+            </div>
+          </div>
+          <div class="data-table-container" style="max-height: 380px;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Incident ID</th>
+                  <th>Severity</th>
+                  <th>Service</th>
+                  <th>Origin</th>
+                  <th>Timestamp</th>
+                  <th>Peak Latency</th>
+                  <th>Confidence</th>
+                  <th>Probable Cause</th>
+                </tr>
+              </thead>
+              <tbody id="table-alerts-body">
+                <!-- Rendered via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Severity Breakdown</h3>
+              <div class="card-subtitle">Critical vs Warning incidents</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-severity-donut"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================================
+         TAB 5: LIVE ANOMALY SIMULATOR & PLAYGROUND
+         ============================================================= -->
+    <section class="tab-content" id="tab-simulator">
+      <div class="card simulator-box">
+        <div>
+          <h2 class="card-title" style="margin-bottom:0.5rem">Live Anomaly Injection & Detection Playground</h2>
+          <p style="color:var(--text-muted); font-size:0.88rem; margin-bottom:1.5rem">
+            Select a target microservice and a failure mode. The simulator generates live telemetry, passes it through the trained Machine Learning pipeline, applies Bayes' Theorem for confidence calibration, and infers root-cause remediation in real time.
+          </p>
+
+          <form id="simulator-form">
+            <div class="form-group">
+              <label class="form-label" for="sim-service">Target Microservice</label>
+              <select class="form-select" id="sim-service">
+                <option value="payment-service">payment-service (/pay, Base 210ms)</option>
+                <option value="auth-service">auth-service (/login, Base 45ms)</option>
+                <option value="order-service">order-service (/orders, Base 115ms)</option>
+                <option value="user-service">user-service (/users, Base 32ms)</option>
+                <option value="inventory-service">inventory-service (/inventory, Base 58ms)</option>
+                <option value="notification-service">notification-service (/notify, Base 28ms)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="sim-type">Failure Mode / Injection Type</label>
+              <select class="form-select" id="sim-type">
+                <option value="latency_spike">Latency Spike (Sudden 8x burst)</option>
+                <option value="gradual_degradation">Gradual Memory Leak (Heap bloat >550MB)</option>
+                <option value="error_burst">Error Burst (HTTP 500/502/503 wave)</option>
+                <option value="traffic_drop">Traffic Drop (Service outage / Ingress cut)</option>
+                <option value="traffic_surge">Traffic Surge / DDoS (10x concurrency load)</option>
+                <option value="cpu_saturation">CPU Saturation (CPU pinned at 98-100%)</option>
+                <option value="normal">Normal Operation (Baseline control check)</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn-primary" id="sim-submit-btn" style="width:100%">
+              Simulate & Detect Anomaly
+            </button>
+          </form>
+        </div>
+
+        <div>
+          <h3 class="card-title" style="margin-bottom:1rem">Real-Time Detection Output</h3>
+          <div id="sim-result-container" style="display:none">
+            <!-- Populated via JavaScript -->
+          </div>
+          <div id="sim-placeholder" style="border: 2px dashed var(--border-subtle); padding: 3rem; text-align: center; border-radius: 12px; color: var(--text-dim);">
+            Click <strong>Simulate & Detect Anomaly</strong> to trigger live model inference.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================================
+         TAB 6: VIVA VOCE & GUIDES
+         ============================================================= -->
+    <section class="tab-content" id="tab-viva">
+      <div class="card" style="margin-bottom: 2rem;">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Viva Voce Preparation & Academic Defense Guide</h2>
+            <div class="card-subtitle">15 likely questions asked by examination panels with high-scoring answers</div>
+          </div>
+          <input type="text" class="form-input" id="viva-search-input" placeholder="Search viva questions..." style="width:250px;">
+        </div>
+
+        <div id="viva-accordion-container">
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Q1: Why is API response latency modeled as lognormal rather than Gaussian?</span>
+              <span>▼</span>
+            </div>
+            <div class="accordion-body">
+              <strong>Answer:</strong> Physical network delays and computational processing have a strict lower bound (> 0 ms) and an unbounded right tail caused by garbage collection pauses, queuing delays, and disk I/O wait. Our D'Agostino normality test on raw latency rejected Gaussian normality (p < 0.001), while log-transformed latency conformed to normal distribution, confirming lognormal behavior.
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Q2: What is the Law of Large Numbers (LLN) and how did you demonstrate it?</span>
+              <span>▼</span>
+            </div>
+            <div class="accordion-body">
+              <strong>Answer:</strong> LLN states that as the sample size (n) increases, the sample mean converges to the true population mean. In Phase 2, we treated all 51,840 records as the population (μ = 82.58 ms) and demonstrated that sample means drawn from n = 30 up to n = 10,000 converged cleanly to 82.71 ms.
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Q3: How does Bayes' Theorem eliminate false alarms in alerting?</span>
+              <span>▼</span>
+            </div>
+            <div class="accordion-body">
+              <strong>Answer:</strong> A single signal like high latency has a low posterior probability of being a real outage (4.1%) due to background noise. By using Bayes' Theorem to combine independent evidence (high latency AND high 5xx error rate), the posterior probability jumps to 92.3%, providing a mathematically calibrated confidence score.
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Q4: Why must true anomalies NOT be deleted during data cleaning?</span>
+              <span>▼</span>
+            </div>
+            <div class="accordion-body">
+              <strong>Answer:</strong> In standard regression, outliers can distort model parameters and are removed. But in anomaly detection, anomalies are the primary target of interest! Blindly deleting them leaves the dataset sterile. We only filter impossible physical glitches (negative latency or sensor overflow) and preserve true anomalies with indicator flags.
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Q5: What is the Majority Voting Ensemble and why is it superior?</span>
+              <span>▼</span>
+            </div>
+            <div class="accordion-body">
+              <strong>Answer:</strong> Individual unsupervised models (Isolation Forest, LOF, One-Class SVM) each have distinct geometric assumptions. Standalone LOF generated 380 false positives. By requiring at least 2 of 3 detectors to agree, our ensemble slashed false alarms by 40% (down to 231) while preserving 100.0% recall with zero detection delay.
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Q6: How does your system comply with India's DPDP Act 2023 and GDPR?</span>
+              <span>▼</span>
+            </div>
+            <div class="accordion-body">
+              <strong>Answer:</strong> We enforce data minimization by stripping URL query parameters, masking and hashing client IP addresses with HMAC-SHA256, redacting authorization bearer tokens, using synthetic user identifiers, and implementing tiered hot/warm/cold data retention.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Dashboard & Project Guides</h3>
+            <div class="card-subtitle">Full documentation and BI implementation steps</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:1rem; flex-wrap:wrap">
+          <a href="/download/analysis_workbook.xlsx" class="btn-secondary">Download Excel Analysis (.xlsx)</a>
+          <a href="/download/metrics_clean.csv" class="btn-secondary">Download Metrics Clean (.csv)</a>
+          <a href="/download/alerts.csv" class="btn-secondary">Download Alerts (.csv)</a>
+          <a href="/download/service_summary.csv" class="btn-secondary">Download Service Summary (.csv)</a>
+          <a href="/download/model_evaluation_benchmark.csv" class="btn-secondary">Download Model Benchmark (.csv)</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

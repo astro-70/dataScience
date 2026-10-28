@@ -1,0 +1,7 @@
+Model,Precision,Recall,F1_Score,ROC_AUC,Specificity,False_Positives,Detection_Delay_Min
+StatisticalZScore,0.1641,0.6774,0.2642,0.8346,0.9917,107,0.0
+IsolationForest,0.0515,0.6452,0.0955,0.9581,0.9715,368,18.3
+LocalOutlierFactor,0.0754,1.0,0.1403,0.9997,0.9706,380,0.0
+OneClassSVM,0.0769,1.0,0.1429,0.9998,0.9712,372,0.0
+MajorityVotingEnsemble,0.1183,1.0,0.2116,0.9996,0.9821,231,0.0
+SupervisedRF,0.9444,0.5484,0.6939,0.9999,0.9999,1,10.0

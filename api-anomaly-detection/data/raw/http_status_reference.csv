@@ -1,0 +1,13 @@
+status_code,name,category,description,client_retryable,sla_impact
+200,OK,Success,Standard response for successful HTTP requests,No,None
+201,Created,Success,Request fulfilled resulting in creation of a new resource,No,None
+202,Accepted,Success,Request accepted for processing but processing incomplete,No,None
+400,Bad Request,Client Error,Server cannot process request due to perceived client error,No,Low
+401,Unauthorized,Client Error,Authentication is required and has failed or not been provided,No,Low
+403,Forbidden,Client Error,Server understands request but refuses to authorize it,No,Low
+404,Not Found,Client Error,Requested resource could not be found on the server,No,Low
+429,Too Many Requests,Client Error,User has sent too many requests in a given amount of time (Rate Limited),Yes,Medium
+500,Internal Server Error,Server Error,Generic error message when an unexpected condition occurred,Yes,Critical
+502,Bad Gateway,Server Error,Server acting as a gateway received an invalid response from upstream,Yes,Critical
+503,Service Unavailable,Server Error,Server cannot handle request due to overload or maintenance,Yes,Critical
+504,Gateway Timeout,Server Error,Gateway did not receive a timely response from upstream server,Yes,Critical

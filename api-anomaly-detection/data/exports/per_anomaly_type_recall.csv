@@ -1,0 +1,4 @@
+Anomaly_Type,True_Instances,StatisticalZScore_Recall,IsolationForest_Recall,LocalOutlierFactor_Recall,OneClassSVM_Recall,MajorityVotingEnsemble_Recall,SupervisedRF_Recall
+traffic_drop,11,0.091,0.0,1.0,1.0,1.0,0.364
+traffic_surge,9,1.0,1.0,1.0,1.0,1.0,0.889
+cpu_saturation,11,1.0,1.0,1.0,1.0,1.0,0.455
